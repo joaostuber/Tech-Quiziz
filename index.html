@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TechQuiz — Teste seus conhecimentos em tecnologia.">
+  <title>TechQuiz — Teste seus conhecimentos!</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-layer" aria-hidden="true"></div>
+
+  <main class="app">
+    <!-- TELA INICIAL -->
+    <section id="screen-start" class="screen active" aria-label="Tela inicial">
+      <div class="card">
+        <header class="brand">
+          <div class="brand-mark">TQ</div>
+          <h1>TechQuiz</h1>
+          <p class="brand-sub">Teste seus conhecimentos!</p>
+        </header>
+
+        <p class="intro">
+          Desafio de perguntas sobre tecnologia, programação, hardware, robótica e inteligência artificial.
+          São 10 perguntas por categoria, com 30 segundos cada. A ordem muda a cada partida.
+        </p>
+
+        <div class="field">
+          <label for="player-name">Nome do participante</label>
+          <input
+            type="text"
+            id="player-name"
+            maxlength="30"
+            placeholder="Digite seu nome"
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <p id="name-error" class="field-error" role="alert"></p>
+        </div>
+
+        <div class="field">
+          <span class="field-label">Categoria</span>
+          <div id="category-grid" class="cat-grid" role="listbox" aria-label="Categorias">
+            <button type="button" class="cat-btn selected" data-cat="programacao" role="option" aria-selected="true">Programação</button>
+            <button type="button" class="cat-btn" data-cat="hardware" role="option" aria-selected="false">Hardware</button>
+            <button type="button" class="cat-btn" data-cat="robotica" role="option" aria-selected="false">Robótica</button>
+            <button type="button" class="cat-btn" data-cat="ia" role="option" aria-selected="false">Inteligência Artificial</button>
+            <button type="button" class="cat-btn cat-full" data-cat="gerais" role="option" aria-selected="false">Conhecimentos Gerais</button>
+          </div>
+          <input type="hidden" id="category-select" value="programacao">
+        </div>
+
+        <div class="actions">
+          <button type="button" id="btn-start" class="btn btn-primary">Começar desafio</button>
+          <button type="button" id="btn-view-ranking" class="btn btn-ghost">Ver ranking</button>
+        </div>
+
+        <aside class="howto">
+          <h2>Como jogar</h2>
+          <ol>
+            <li>Informe seu nome e escolha uma categoria.</li>
+            <li>Responda 10 perguntas com até 30 segundos cada.</li>
+            <li>Cada acerto vale 100 pontos.</li>
+            <li>Ao final, veja seu desempenho e o ranking local.</li>
+          </ol>
+        </aside>
+      </div>
+    </section>
+
+    <!-- TELA DO JOGO -->
+    <section id="screen-game" class="screen" aria-label="Tela do jogo">
+      <div class="card">
+        <div class="game-top">
+          <span id="question-counter" class="badge">Pergunta 1 de 10</span>
+          <div class="timer-box" aria-live="polite">
+            <svg class="timer-svg" viewBox="0 0 40 40" aria-hidden="true">
+              <circle class="timer-track" cx="20" cy="20" r="16"></circle>
+              <circle id="timer-circle" class="timer-fill" cx="20" cy="20" r="16"></circle>
+            </svg>
+            <span id="timer" class="timer-num">30</span>
+          </div>
+        </div>
+
+        <div class="progress" aria-hidden="true">
+          <div id="progress-bar" class="progress-fill"></div>
+        </div>
+
+        <h2 id="question-text" class="question"></h2>
+
+        <div id="options-container" class="options" role="group" aria-label="Alternativas"></div>
+
+        <div id="feedback" class="feedback" role="status"></div>
+        <p id="explanation" class="explanation"></p>
+
+        <button type="button" id="btn-next" class="btn btn-primary is-hidden">Próxima pergunta</button>
+      </div>
+    </section>
+
+    <!-- TELA DE RESULTADOS -->
+    <section id="screen-results" class="screen" aria-label="Resultados">
+      <div class="card">
+        <header class="result-head">
+          <h2>Resultado final</h2>
+          <p class="result-meta">
+            <span id="result-name">—</span>
+            <span class="dot">·</span>
+            <span id="result-category">—</span>
+          </p>
+        </header>
+
+        <div class="score-block">
+          <span id="result-score" class="score-num">0</span>
+          <span class="score-unit">pontos</span>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <span id="result-correct" class="stat-num ok">0</span>
+            <span class="stat-lbl">Acertos</span>
+          </div>
+          <div class="stat">
+            <span id="result-incorrect" class="stat-num bad">0</span>
+            <span class="stat-lbl">Erros</span>
+          </div>
+          <div class="stat">
+            <span id="result-unanswered" class="stat-num warn">0</span>
+            <span class="stat-lbl">Em branco</span>
+          </div>
+          <div class="stat">
+            <span id="result-percent" class="stat-num info">0%</span>
+            <span class="stat-lbl">Aproveitamento</span>
+          </div>
+        </div>
+
+        <p id="result-message" class="result-msg"></p>
+
+        <div class="actions">
+          <button type="button" id="btn-play-again" class="btn btn-primary">Jogar novamente</button>
+          <button type="button" id="btn-results-ranking" class="btn btn-ghost">Ver ranking</button>
+          <button type="button" id="btn-back-home" class="btn btn-ghost">Voltar ao início</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TELA DE RANKING -->
+    <section id="screen-ranking" class="screen" aria-label="Ranking">
+      <div class="card">
+        <header class="result-head">
+          <h2>Ranking local</h2>
+          <p class="result-meta">Top 10 resultados neste navegador</p>
+        </header>
+
+        <p id="ranking-empty" class="empty-msg is-hidden">
+          Nenhum resultado salvo ainda. Finalize uma partida para aparecer aqui.
+        </p>
+
+        <ol id="ranking-list" class="rank-list"></ol>
+
+        <div class="actions">
+          <button type="button" id="btn-clear-ranking" class="btn btn-danger">Limpar ranking</button>
+          <button type="button" id="btn-ranking-back" class="btn btn-ghost">Voltar</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>TechQuiz · Mundo SENAI · Desenvolvimento de Sistemas</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
